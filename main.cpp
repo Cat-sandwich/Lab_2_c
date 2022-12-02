@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <conio.h>
 #include <Windows.h>
+#include <complex>
+
+
 
 int Check_Int()
 {
@@ -23,9 +26,10 @@ int Check_Int()
 
 	return number;
 }
-double Check_Double()
+template<class T>
+T Check_Double()
 {
-	double number = 0;
+	T number ;
 
 	while (!(cin >> number) || (cin.peek() != '\n'))
 	{
@@ -38,7 +42,8 @@ double Check_Double()
 	return number;
 }
 
-void Сhange_Matrix(Matrix** Many_Matrix, const int& current)
+template <class T>
+void Сhange_Matrix(Matrix<T>** Many_Matrix, const int& current)
 {
 	cout << "Введите индексы элемента, который нужно изменить:" << endl;
 	cout << "Введите номер строки: ";
@@ -50,7 +55,7 @@ void Сhange_Matrix(Matrix** Many_Matrix, const int& current)
 	{
 		((*Many_Matrix)[current]).Get_Data(i, j);
 		cout << "Введите значение, на которое вы хотите поменять число:";
-		double value = Check_Double();
+		T value = Check_Double<T>();
 		((*Many_Matrix)[current])(i, j, value);
 	}
 	catch (Exception& error)
@@ -60,18 +65,19 @@ void Сhange_Matrix(Matrix** Many_Matrix, const int& current)
 	}
 }
 
-
-Matrix Random_Matrix(int m, int n)
+template <class T>
+Matrix<T> Random_Matrix(int m, int n)
 {
-	Matrix New_matrix(m, n);
+	Matrix<T> New_matrix(m, n);
 	New_matrix.Random();
 	return  New_matrix;
 }
 
-void Add_Matrix(int* size, Matrix** Many_Matrix, Matrix New_matrix)
+template <class T>
+void Add_Matrix(int* size, Matrix<T>** Many_Matrix, Matrix<T> New_matrix)
 {
 	*size += 1;
-	Matrix* tmp = new Matrix[*size];
+	Matrix<T>* tmp = new Matrix<T>[*size];
 	if (*size - 1 != 0)
 	{
 		for (int i = 0; i < (*size) - 1; i++)
@@ -83,7 +89,8 @@ void Add_Matrix(int* size, Matrix** Many_Matrix, Matrix New_matrix)
 
 }
 
-void Print_Matrix(Matrix* Many_Matrix, int current, int size)
+template <class T>
+void Print_Matrix(Matrix<T>* Many_Matrix, int current, int size)
 {
 
 	if (Many_Matrix == NULL) cout << "Матриц нет(\n\n";
@@ -97,15 +104,16 @@ int get_key()
 	return key;
 }
 
-void menu1()
+template <class T>
+void menu()
 {
 	int key = 0;
 	bool menu1 = true;
-	Matrix* Many_Matrix = NULL;
-	Matrix New_matrix;
-	Matrix* Vector = NULL;
+	Matrix<T>* Many_Matrix = NULL;
+	Matrix<T> New_matrix;
+	Matrix<T>* Vector = NULL;
 	int current = 0, size = 0;
-	double value = 0;
+	T value = 0;
 	while (menu1)
 	{
 
@@ -120,7 +128,7 @@ void menu1()
 		cout << "\"+\" - Задать матрицу с определенным числом" << endl;
 		cout << "-> Вправо\n-< Влево\n" << endl;
 
-		double Scalar = 0;
+		T Scalar = 0;
 
 		key = get_key();
 		int m = 0, n = 0;
@@ -137,8 +145,8 @@ void menu1()
 			printf("Данные считаны\n ");
 			system("pause");
 
-			New_matrix = Random_Matrix(m, n);
-			Add_Matrix(&size, &Many_Matrix, New_matrix);
+			New_matrix = Random_Matrix<T>(m, n);
+			Add_Matrix<T>(&size, &Many_Matrix, New_matrix);
 			current = size - 1;
 
 			break;
@@ -161,7 +169,7 @@ void menu1()
 			try
 			{
 				New_matrix = Many_Matrix[current] + Many_Matrix[m - 1];
-				Add_Matrix(&size, &Many_Matrix, New_matrix);
+				Add_Matrix<T>(&size, &Many_Matrix, New_matrix);
 				current = size - 1;
 			}
 			catch (Exception& error)
@@ -190,7 +198,7 @@ void menu1()
 			try
 			{
 				New_matrix = Many_Matrix[current] - Many_Matrix[m - 1];
-				Add_Matrix(&size, &Many_Matrix, New_matrix);
+				Add_Matrix<T>(&size, &Many_Matrix, New_matrix);
 				current = size - 1;
 			}
 			catch (Exception& error)
@@ -216,7 +224,7 @@ void menu1()
 			try
 			{
 				New_matrix = Many_Matrix[current] * Many_Matrix[m - 1];
-				Add_Matrix(&size, &Many_Matrix, New_matrix);
+				Add_Matrix<T>(&size, &Many_Matrix, New_matrix);
 				current = size - 1;
 			}
 			catch (Exception& error)
@@ -235,9 +243,9 @@ void menu1()
 				break;
 			}
 			cout << "Введите число: ";
-			Scalar = Check_Double();
+			Scalar = Check_Double<T>();
 			New_matrix = Many_Matrix[current] * Scalar;
-			Add_Matrix(&size, &Many_Matrix, New_matrix);
+			Add_Matrix<T>(&size, &Many_Matrix, New_matrix);
 			system("pause");
 			current = size - 1;
 			break;
@@ -249,12 +257,12 @@ void menu1()
 				break;
 			}
 			cout << "Введите число:" << endl;
-			Scalar = Check_Double();
+			Scalar = Check_Double<T>();
 			try
 			{
 				New_matrix = Many_Matrix[current] / Scalar;
 
-				Add_Matrix(&size, &Many_Matrix, New_matrix);
+				Add_Matrix<T>(&size, &Many_Matrix, New_matrix);
 				current = size - 1;
 			}
 			catch (Exception& Error)
@@ -301,12 +309,12 @@ void menu1()
 			}
 
 			cout << "Введите вектор размерностью 3 на 1...\n" << endl;
-			Vector = new Matrix(3, 1);
+			Vector = new Matrix<T>(3, 1);
 			n = 0;
 			for (int m = 0; m < 3; m++)
 			{
 				cout << "Введите B[" << m + 1 << "][" << n + 1 << "]: ";
-				value = Check_Double();
+				value = Check_Double<T>();
 				(*Vector)(m, n, value);
 
 
@@ -314,11 +322,11 @@ void menu1()
 			cout << Vector;
 
 
-			Add_Matrix(&size, &Many_Matrix, *Vector);
+			Add_Matrix<T>(&size, &Many_Matrix, *Vector);
 			try
 			{
 				New_matrix = Many_Matrix[current].Search_Matrix_X(*Vector);
-				Add_Matrix(&size, &Many_Matrix, New_matrix);
+				Add_Matrix<T>(&size, &Many_Matrix, New_matrix);
 			}
 			catch (Exception& Error)
 			{
@@ -351,9 +359,9 @@ void menu1()
 			n = Check_Int();
 
 			cout << "Введите число, которым будет заполнена вся матрица:";
-			value = Check_Double();
-			New_matrix = Matrix(m, n, value);
-			Add_Matrix(&size, &Many_Matrix, New_matrix);
+			value = Check_Double<T>();
+			New_matrix = Matrix<T>(m, n, value);
+			Add_Matrix<T>(&size, &Many_Matrix, New_matrix);
 			current = size - 1;
 			cout << "Данные считаны\n ";
 			system("pause");
@@ -362,7 +370,7 @@ void menu1()
 		case(48):
 			system("cls");
 
-			system("pause");
+			
 			menu1 = false;
 			break;
 		case 75:
@@ -382,10 +390,44 @@ int main()
 	setlocale(LC_ALL, "RUS");
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
+	bool exit = true;
+	while (exit) {
+		cout << "Здравствуйте! Вас приветствует программа \"МНОГО МАТРИЦ\"\n" << endl;
+		cout << "Нажмите:" << endl;
+		cout << "1 - чтобы работать с типом int" << endl;
+		cout << "2 - чтобы работать с типом double" << endl;
+		cout << "3 - чтобы работать с типом float" << endl;
+		cout << "4 - чтобы работать с типом complex-double" << endl;
+		cout << "5 - чтобы работать с типом complex-float" << endl;
+		cout << "0 - чтобы завершить работу" << endl;
 
-	cout << "Здравствуйте! Вас приветствует программа \"МНОГО МАТРИЦ\"\n" << endl;
-	system("pause");
-	menu1();
+		int key = get_key();
+
+		switch (key)
+		{
+		case 49:
+			menu<int>();
+			break;
+		case 50:
+			menu<double>();
+			break;
+		case 51:
+			menu<float>();
+			break;
+		case 52:
+			menu<complex<double>>();
+			break;
+		case 53:
+			menu<complex<float>>();
+			break;
+		case 48:
+			exit=false;
+			break;
+		default:
+			break;
+		}
+		
+	}
 
 	return 0;
 }

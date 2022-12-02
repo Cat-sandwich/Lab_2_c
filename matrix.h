@@ -1,5 +1,6 @@
 #include <iostream>
 #include <math.h>
+#include <complex>
 using namespace std;
 
 template <class T>
@@ -68,6 +69,15 @@ public:
 
 	Matrix Search_Matrix_X(const Matrix& Vector);
 
-	friend ostream& operator << (ostream& os, const Matrix& New_Matrix);
+	friend ostream& operator << (ostream& os, const Matrix& New_Matrix)
+	{
+		for (int i = 0; i < New_Matrix.m; i++) {
+			for (int j = 0; j < New_Matrix.n; j++) {
+				os << "\t" << New_Matrix.Get_Data(i, j);
+			}
+			cout << endl;
+		}
+		return os;
+	}
 };
 

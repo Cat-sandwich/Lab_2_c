@@ -229,7 +229,7 @@ Matrix<T> Matrix<T>::operator * (const Matrix<T>& New_Matrix)
 template <class T>
 Matrix<T> Matrix<T>::operator * (const T& scalar)
 {
-	Matrix res(m, n, T(0));
+	Matrix<T> res(m, n, T(0));
 
 	for (int i = 0; i < this->m; i++)
 	{
@@ -245,7 +245,7 @@ template <class T>
 Matrix<T> Matrix<T>::operator / (const T& scalar)
 {
 	if (scalar == T(0)) throw Divizion_By_Zero();
-	Matrix res(m, n, T(0));
+	Matrix<T> res(m, n, T(0));
 
 	for (int i = 0; i < this->m; i++) {
 		for (int j = 0; j < this->n; j++) {
@@ -292,7 +292,7 @@ void Matrix<T>::Random()
 	srand(time(0));
 	for (int i = 0; i < m; ++i)
 		for (int j = 0; j < n; ++j)
-			data[i][j] = T(1) + rand() % T(10);
+			data[i][j] = T((1 + rand() % 100) / 10.0);
 }
 
 template <class T>
@@ -326,7 +326,7 @@ T Matrix<T>::NDeterminant(int size)
 	if (n != m) throw Different_Dimensions();
 	Matrix<T> TmpMatrix(m, m);
 	int new_size = size - 1;
-	double d = 0;
+	T d = 0;
 	int k = 1; //(-1) в степени i
 	if (size < 1) cout << "ќпределитель вычислить невозможно!";
 	if (m == 1)
@@ -364,7 +364,7 @@ Matrix<T> Matrix<T>::Search_Matrix_X(const Matrix<T>& Vector)
 	if (this->n != Vector.m) throw Different_Dimensions();
 
 	T det = (*this).NDeterminant(m);
-	if (det == 0) throw Zero_Determinant();
+	if (det == T(0)) throw Zero_Determinant();
 
 	cout << det << endl;
 	Matrix<T> Minors(n, m);
@@ -374,28 +374,17 @@ Matrix<T> Matrix<T>::Search_Matrix_X(const Matrix<T>& Vector)
 		for (int j = 0; j < m; j++)
 		{
 			Minors.data[i][j] = (T(pow(-1, (i + j)))) * Pre_Minor(i, j).NDeterminant(m - 1);
+
 		}
 	}
 	cout << Minors << endl;
 
 	Matrix<T> Minors_Transpose = Minors.Transpose();
 	cout << Minors_Transpose << endl;
-	Matrix<T> Ans = (T((1 / det)) * Minors_Transpose) * Vector;
+	Matrix<T> Ans = (T(1)/ det) * Minors_Transpose * Vector;
 
 
 	return Ans;
-}
-
-template <class T>
-ostream& operator << (ostream& os, const Matrix<T>& New_Matrix)
-{
-	for (int i = 0; i < New_Matrix.m; i++) {
-		for (int j = 0; j < New_Matrix.n; j++) {
-			os << "\t" << New_Matrix.Get_Data(i, j);
-		}
-		cout << endl;
-	}
-	return os;
 }
 
 template class Matrix<int>;
