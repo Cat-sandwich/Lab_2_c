@@ -387,6 +387,35 @@ Matrix<T> Matrix<T>::Search_Matrix_X(const Matrix<T>& Vector)
 	return Ans;
 }
 
+template <>
+void Matrix<complex<double>>::Random()
+{
+	srand(time(0));
+	for (int i = 0; i < m; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			complex<double> value(((1 + rand() % 100) / 10.0), ((1 + rand() % 100) / 10.0));
+			data[i][j] = value;
+		}
+	}
+}
+
+template <>
+void Matrix<complex<float>>::Random()
+{
+
+	srand(time(0));
+	for (int i = 0; i < m; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			complex<float> value(((1 + rand() % 100) / 10.0), ((1 + rand() % 100) / 10.0));
+			data[i][j] = value;
+		}
+	}
+}
+
 template class Matrix<int>;
 template class Matrix<float>;
 template class Matrix<double>;

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <complex>
+#include <iomanip>
 using namespace std;
 
 template <class T>
@@ -73,11 +74,12 @@ public:
 	{
 		for (int i = 0; i < New_Matrix.m; i++) {
 			for (int j = 0; j < New_Matrix.n; j++) {
-				os << "\t" << New_Matrix.Get_Data(i, j);
+				os << setw(10) << New_Matrix.Get_Data(i, j);
 			}
 			cout << endl;
 		}
 		return os;
 	}
+	
 };
 
