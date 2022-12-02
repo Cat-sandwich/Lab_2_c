@@ -6,8 +6,8 @@
 #include <complex>
 using namespace std;
 
-
-Matrix::Matrix()
+template <class T>
+Matrix<T>::Matrix()
 {
 	m = 0;
 	n = 0;
@@ -15,29 +15,30 @@ Matrix::Matrix()
 
 }
 
-Matrix::Matrix(int m, int n)
+template <class T>
+Matrix<T>::Matrix(int m, int n)
 {
 	this->m = m;
 	this->n = n;
 
-	data = (double**) new double* [m];
+	data = (T**) new T* [m];
 
 	for (int i = 0; i < m; i++)
-		data[i] = (double*) new double[n];
+		data[i] = (T*) new T[n];
 
 }
 
-
-Matrix::Matrix(int m, int n, const double& value)
+template <class T>
+Matrix<T>::Matrix(int m, int n, const T& value)
 {
-	//*this = Matrix(m, n);
+	
 	Set_m(m);
 	Set_n(n);
 
-	data = (double**) new double* [m];
+	data = (T**) new T* [m];
 
 	for (int i = 0; i < m; i++)
-		data[i] = (double*) new double[n];
+		data[i] = (T*) new T[n];
 	for (int i = 0; i < m; i++)
 	{
 		for (int j = 0; j < n; j++)
@@ -46,52 +47,59 @@ Matrix::Matrix(int m, int n, const double& value)
 
 }
 
-Matrix::Matrix(const Matrix& Matrix)
+template <class T>
+Matrix<T>::Matrix(const Matrix<T>& Matrix)
 {
 	m = Matrix.m;
 	n = Matrix.n;
 
 
-	data = (double**) new double* [m];
+	data = (T**) new T* [m];
 
 	for (int i = 0; i < m; i++)
-		data[i] = (double*) new double[n];
+		data[i] = (T*) new T[n];
 
 	for (int i = 0; i < m; i++)
 		for (int j = 0; j < n; j++)
 			data[i][j] = Matrix.data[i][j];
 }
 
-void Matrix::Set_m(int m)
+template <class T>
+void Matrix<T>::Set_m(int m)
 {
 	if (m > 0)
 		this->m = m;
 }
 
-void Matrix::Set_n(int n)
+template <class T>
+void Matrix<T>::Set_n(int n)
 {
 	if (n > 0)
 		this->n = n;
 }
 
-int Matrix::Get_m()
+template <class T>
+int Matrix<T>::Get_m()
 {
 	return m;
 }
 
-int Matrix::Get_n()
+template <class T>
+int Matrix<T>::Get_n()
 {
 	return n;
 }
 
-void Matrix::Set_Data(const double& value)
+template <class T>
+void Matrix<T>::Set_Data(const T& value)
 {
 	for (int i = 0; i < m; i++)
 		for (int j = 0; j < n; j++)
 			data[i][j] = value;
 }
 
-double Matrix::Get_Data(int i, int j) const //todo+
+template <class T>
+T Matrix<T>::Get_Data(int i, int j) const //todo+
 {
 	if ((m <= i) && (n <= j)) throw Invalid_Index();
 	return data[i][j];
@@ -99,8 +107,8 @@ double Matrix::Get_Data(int i, int j) const //todo+
 }
 
 
-
-void Matrix::Print(const int& Number_Matrix)
+template <class T>
+void Matrix<T>::Print(const int& Number_Matrix)
 {
 	if (data == NULL) throw Empty();
 	cout << "Number_Matrix: " << Number_Matrix << endl;
@@ -112,8 +120,8 @@ void Matrix::Print(const int& Number_Matrix)
 	}
 }
 
-
-Matrix& Matrix::operator = (const Matrix& M) //ToDO+
+template <class T>
+Matrix<T>& Matrix<T>::operator = (const Matrix<T>& M) //ToDO+
 {
 	if ((m == M.m) && (n == M.n))
 	{
@@ -134,10 +142,10 @@ Matrix& Matrix::operator = (const Matrix& M) //ToDO+
 	n = M.n;
 
 
-	data = (double**) new double* [m];
+	data = (T**) new T* [m];
 
 	for (int i = 0; i < m; i++)
-		data[i] = (double*) new double[n];
+		data[i] = (T*) new T[n];
 
 	for (int i = 0; i < m; i++)
 		for (int j = 0; j < n; j++)
@@ -145,7 +153,8 @@ Matrix& Matrix::operator = (const Matrix& M) //ToDO+
 	return *this;
 }
 
-Matrix::~Matrix()
+template <class T>
+Matrix<T>::~Matrix()
 {
 	if (n > 0)
 	{
@@ -157,14 +166,16 @@ Matrix::~Matrix()
 		delete[] data;
 }
 
-double& Matrix::operator ()(int m, int n) const
+template <class T>
+T& Matrix<T>::operator ()(int m, int n) const
 {
 	if ((m > this->m) || (n > this->n)) throw Invalid_Index();
 
-	return   data[m][n];
+	return data[m][n];
 }
 
-Matrix& Matrix::operator () (int m, int n, const double& value)
+template <class T>
+Matrix<T>& Matrix<T>::operator () (int m, int n, const T& value)
 {
 	if ((m > this->m) || (n > this->n)) throw Invalid_Index();
 	data[m][n] = value;
@@ -172,9 +183,10 @@ Matrix& Matrix::operator () (int m, int n, const double& value)
 
 }
 
-Matrix Matrix::operator + (const Matrix& New_Matrix) {
+template <class T>
+Matrix<T> Matrix<T>::operator + (const Matrix<T>& New_Matrix) {
 	if (this->m != New_Matrix.m || this->n != New_Matrix.n) throw Different_Dimensions();
-	Matrix res(m, n, 0);
+	Matrix<T> res(m, n, T(0));
 	for (int i = 0; i < this->m; i++) {
 		for (int j = 0; j < n; j++) {
 			res.data[i][j] = this->data[i][j] + New_Matrix.data[i][j];
@@ -183,11 +195,11 @@ Matrix Matrix::operator + (const Matrix& New_Matrix) {
 	return res;
 }
 
-
-Matrix Matrix::operator - (const Matrix& New_Matrix) {
+template <class T>
+Matrix<T> Matrix<T>::operator - (const Matrix<T>& New_Matrix) {
 	if (this->m != New_Matrix.m || this->n != New_Matrix.n) throw Different_Dimensions();
 
-	Matrix res(m, n, 0);
+	Matrix<T> res(m, n, T(0));
 	for (int i = 0; i < this->m; i++) {
 		for (int j = 0; j < n; j++) {
 			res.data[i][j] = this->data[i][j] - New_Matrix.data[i][j];
@@ -196,12 +208,12 @@ Matrix Matrix::operator - (const Matrix& New_Matrix) {
 	return res;
 }
 
-
-Matrix Matrix::operator * (const Matrix& New_Matrix)
+template <class T>
+Matrix<T> Matrix<T>::operator * (const Matrix<T>& New_Matrix)
 {
 	if (n != New_Matrix.m) throw Different_Dimensions();
 
-	Matrix res(m, New_Matrix.n, 0);
+	Matrix<T> res(m, New_Matrix.n, T(0));
 
 	for (int i = 0; i < res.m; ++i)
 		for (int j = 0; j < res.n; ++j)
@@ -214,9 +226,10 @@ Matrix Matrix::operator * (const Matrix& New_Matrix)
 	return res;
 }
 
-Matrix Matrix::operator * (const double& scalar)
+template <class T>
+Matrix<T> Matrix<T>::operator * (const T& scalar)
 {
-	Matrix res(m, n, 0);
+	Matrix res(m, n, T(0));
 
 	for (int i = 0; i < this->m; i++)
 	{
@@ -228,11 +241,11 @@ Matrix Matrix::operator * (const double& scalar)
 	return res;
 }
 
-
-Matrix Matrix::operator / (const double& scalar)
+template <class T>
+Matrix<T> Matrix<T>::operator / (const T& scalar)
 {
-	if (scalar == (0)) throw Divizion_By_Zero();
-	Matrix res(m, n, 0);
+	if (scalar == T(0)) throw Divizion_By_Zero();
+	Matrix res(m, n, T(0));
 
 	for (int i = 0; i < this->m; i++) {
 		for (int j = 0; j < this->n; j++) {
@@ -242,10 +255,11 @@ Matrix Matrix::operator / (const double& scalar)
 	return res;
 }
 
-double Matrix::Ñalculating_trace_matrix()
+template <class T>
+T Matrix<T>::Ñalculating_trace_matrix()
 {
 	if (n != m) throw Dimensions_Incorrect();
-	double trace = 0;
+	T trace = 0;
 	for (int i = 0; i < this->m; i++) {
 		for (int j = 0; j < this->n; j++) {
 			if (i == j)
@@ -255,10 +269,10 @@ double Matrix::Ñalculating_trace_matrix()
 	return trace;
 }
 
-
-Matrix Matrix::Transpose()
+template <class T>
+Matrix<T> Matrix<T>::Transpose()
 {
-	Matrix Transposed(m, n);
+	Matrix<T> Transposed(m, n);
 	for (int i = 0; i < m; ++i)
 	{
 		for (int j = i; j < n; ++j)
@@ -272,18 +286,20 @@ Matrix Matrix::Transpose()
 	return Transposed;
 }
 
-void Matrix::Random()
+template <class T>
+void Matrix<T>::Random()
 {
 	srand(time(0));
 	for (int i = 0; i < m; ++i)
 		for (int j = 0; j < n; ++j)
-			data[i][j] = 1 + rand() % 10;
+			data[i][j] = T(1) + rand() % T(10);
 }
 
-Matrix Matrix::Pre_Minor(int row, int col) const //todo+
+template <class T>
+Matrix<T> Matrix<T>::Pre_Minor(int row, int col) const //todo+
 {
 	if (n != m) throw Different_Dimensions();
-	Matrix New_Matrix(m - 1, n - 1);
+	Matrix<T> New_Matrix(m - 1, n - 1);
 	int in = 0, jn = 0;
 
 	for (int i = 0; i < m; i++)
@@ -304,10 +320,11 @@ Matrix Matrix::Pre_Minor(int row, int col) const //todo+
 	return New_Matrix;
 }
 
-double Matrix::NDeterminant(int size)
+template <class T>
+T Matrix<T>::NDeterminant(int size)
 {
 	if (n != m) throw Different_Dimensions();
-	Matrix TmpMatrix(m, m);
+	Matrix<T> TmpMatrix(m, m);
 	int new_size = size - 1;
 	double d = 0;
 	int k = 1; //(-1) â ñòåïåíè i
@@ -331,7 +348,7 @@ double Matrix::NDeterminant(int size)
 
 			TmpMatrix = (*this).Pre_Minor(i, 0);
 
-			d += k * data[i][0] * TmpMatrix.NDeterminant(new_size);
+			d += T(k) * data[i][0] * TmpMatrix.NDeterminant(new_size);
 			k = -k;
 		}
 
@@ -341,35 +358,36 @@ double Matrix::NDeterminant(int size)
 }
 
 
-
-Matrix Matrix::Search_Matrix_X(const Matrix& Vector)
+template <class T>
+Matrix<T> Matrix<T>::Search_Matrix_X(const Matrix<T>& Vector)
 {
 	if (this->n != Vector.m) throw Different_Dimensions();
 
-	double det = (*this).NDeterminant(m);
+	T det = (*this).NDeterminant(m);
 	if (det == 0) throw Zero_Determinant();
 
 	cout << det << endl;
-	Matrix Minors(n, m);
+	Matrix<T> Minors(n, m);
 
 	for (int i = 0; i < n; i++)
 	{
 		for (int j = 0; j < m; j++)
 		{
-			Minors.data[i][j] = (pow(-1, (i + j))) * Pre_Minor(i, j).NDeterminant(m - 1);
+			Minors.data[i][j] = (T(pow(-1, (i + j)))) * Pre_Minor(i, j).NDeterminant(m - 1);
 		}
 	}
 	cout << Minors << endl;
 
-	Matrix Minors_Transpose = Minors.Transpose();
+	Matrix<T> Minors_Transpose = Minors.Transpose();
 	cout << Minors_Transpose << endl;
-	Matrix Ans = ((1 / det) * Minors_Transpose) * Vector;
+	Matrix<T> Ans = (T((1 / det)) * Minors_Transpose) * Vector;
 
 
 	return Ans;
 }
 
-ostream& operator << (ostream& os, const Matrix& New_Matrix)
+template <class T>
+ostream& operator << (ostream& os, const Matrix<T>& New_Matrix)
 {
 	for (int i = 0; i < New_Matrix.m; i++) {
 		for (int j = 0; j < New_Matrix.n; j++) {
@@ -380,3 +398,8 @@ ostream& operator << (ostream& os, const Matrix& New_Matrix)
 	return os;
 }
 
+template class Matrix<int>;
+template class Matrix<float>;
+template class Matrix<double>;
+template class Matrix<complex<float>>;
+template class Matrix<complex<double>>;
